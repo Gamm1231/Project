@@ -11,11 +11,21 @@
       display: grid; place-items: center; min-height: 100vh;
     }
     .app {
-      width: min(920px, 95vw); background: var(--card); border-radius: 16px; padding: 20px;
+      width: min(980px, 95vw); background: var(--card); border-radius: 16px; padding: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,.08);
       display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px;
     }
     .left, .right { padding: 10px; }
+    .top-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .lang-switch { display: flex; align-items: center; gap: 6px; }
+    .lang-switch select { padding: 6px 8px; border-radius: 8px; border: 1px solid #e5c2cc; }
     .cake-btn {
       width: 260px; height: 260px; border-radius: 50%; border: none; cursor: pointer;
       background: radial-gradient(circle at 30% 30%, #ffd1dc, #ff8fab 70%);
@@ -27,10 +37,12 @@
     .shop-item {
       display:flex; justify-content:space-between; align-items:center;
       background:#fff4f7; padding:10px 12px; border-radius:10px; margin-bottom:10px;
+      gap: 10px;
     }
     .shop-item button {
       border:none; background:var(--accent); color:#fff; padding:8px 12px;
       border-radius:8px; cursor:pointer;
+      white-space: nowrap;
     }
     .shop-item button:disabled { opacity:.5; cursor:not-allowed; }
     .title { font-size: 28px; margin-bottom: 10px; font-weight: 800; }
@@ -40,47 +52,107 @@
 <body>
   <div class="app">
     <section class="left">
-      <div class="title">🎂 Cake Clicker</div>
-      <button id="cakeBtn" class="cake-btn">点我</button>
-      <div class="stats">
-        <div>蛋糕数量：<b id="cakes">0</b></div>
-        <div>每次点击：<b id="perClick">1</b></div>
-        <div>每秒产量(CPS)：<b id="cps">0</b></div>
+      <div class="top-tools">
+        <div class="title">🎂 Cake Clicker</div>
+        <div class="lang-switch">
+          <label for="langSelect" data-i18n="language">语言</label>
+          <select id="langSelect">
+            <option value="zh">中文</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </div>
       </div>
-      <div class="small">提示：每秒自动生产，进度会自动保存到本地。</div>
+
+      <button id="cakeBtn" class="cake-btn" data-i18n="clickMe">点我</button>
+      <div class="stats">
+        <div><span data-i18n="cakes">蛋糕数量</span>：<b id="cakes">0</b></div>
+        <div><span data-i18n="perClick">每次点击</span>：<b id="perClick">1</b></div>
+        <div><span data-i18n="cps">每秒产量(CPS)</span>：<b id="cps">0</b></div>
+      </div>
+      <div class="small" data-i18n="hint">提示：每秒自动生产，进度会自动保存到本地。</div>
     </section>
 
     <aside class="right">
-      <h3>商店</h3>
+      <h3 data-i18n="shop">商店</h3>
       <div class="shop-item">
         <div>
-          <div>🍰 奶油刀 x <span id="knifeCount">0</span></div>
-          <div class="small">+1 每次点击</div>
+          <div><span data-i18n="knifeName">🍰 奶油刀</span> x <span id="knifeCount">0</span></div>
+          <div class="small" data-i18n="knifeDesc">+1 每次点击</div>
         </div>
         <button id="buyKnife">购买 (10)</button>
       </div>
 
       <div class="shop-item">
         <div>
-          <div>👩‍🍳 烘焙师 x <span id="bakerCount">0</span></div>
-          <div class="small">+1 CPS</div>
+          <div><span data-i18n="bakerName">👩‍🍳 烘焙师</span> x <span id="bakerCount">0</span></div>
+          <div class="small" data-i18n="bakerDesc">+1 每秒自动获得</div>
         </div>
         <button id="buyBaker">购买 (25)</button>
       </div>
 
-      <button id="resetBtn" style="margin-top:10px;">重置存档</button>
+      <div class="shop-item">
+        <div>
+          <div><span data-i18n="mixerName">🥣 自动搅拌机</span> x <span id="mixerCount">0</span></div>
+          <div class="small" data-i18n="mixerDesc">+5 每秒自动获得</div>
+        </div>
+        <button id="buyMixer">购买 (120)</button>
+      </div>
+
+      <button id="resetBtn" style="margin-top:10px;" data-i18n="reset">重置存档</button>
     </aside>
   </div>
 
   <script>
+    const i18n = {
+      zh: {
+        language: "语言",
+        clickMe: "点我",
+        cakes: "蛋糕数量",
+        perClick: "每次点击",
+        cps: "每秒产量(CPS)",
+        hint: "提示：每秒自动生产，进度会自动保存到本地。",
+        shop: "商店",
+        knifeName: "🍰 奶油刀",
+        knifeDesc: "+1 每次点击",
+        bakerName: "👩‍🍳 烘焙师",
+        bakerDesc: "+1 每秒自动获得",
+        mixerName: "🥣 自动搅拌机",
+        mixerDesc: "+5 每秒自动获得",
+        buy: "购买",
+        reset: "重置存档",
+        resetConfirm: "确定要重置存档吗？"
+      },
+      de: {
+        language: "Sprache",
+        clickMe: "Klick mich",
+        cakes: "Kuchen",
+        perClick: "Pro Klick",
+        cps: "Pro Sekunde (CPS)",
+        hint: "Tipp: Automatische Produktion pro Sekunde, Fortschritt wird lokal gespeichert.",
+        shop: "Shop",
+        knifeName: "🍰 Crememesser",
+        knifeDesc: "+1 pro Klick",
+        bakerName: "👩‍🍳 Bäcker/in",
+        bakerDesc: "+1 automatisch pro Sekunde",
+        mixerName: "🥣 Auto-Mixer",
+        mixerDesc: "+5 automatisch pro Sekunde",
+        buy: "Kaufen",
+        reset: "Speicherstand zurücksetzen",
+        resetConfirm: "Möchtest du den Speicherstand wirklich zurücksetzen?"
+      }
+    };
+
     const state = {
       cakes: 0,
       perClick: 1,
       cps: 0,
       knifeCount: 0,
       bakerCount: 0,
+      mixerCount: 0,
       knifeCost: 10,
-      bakerCost: 25
+      bakerCost: 25,
+      mixerCost: 120,
+      lang: "zh"
     };
 
     const els = {
@@ -89,11 +161,26 @@
       cps: document.getElementById("cps"),
       knifeCount: document.getElementById("knifeCount"),
       bakerCount: document.getElementById("bakerCount"),
+      mixerCount: document.getElementById("mixerCount"),
       buyKnife: document.getElementById("buyKnife"),
       buyBaker: document.getElementById("buyBaker"),
+      buyMixer: document.getElementById("buyMixer"),
       cakeBtn: document.getElementById("cakeBtn"),
       resetBtn: document.getElementById("resetBtn"),
+      langSelect: document.getElementById("langSelect")
     };
+
+    function t(key) {
+      return i18n[state.lang]?.[key] ?? i18n.zh[key] ?? key;
+    }
+
+    function translateStaticText() {
+      document.documentElement.lang = state.lang === "de" ? "de" : "zh-CN";
+      document.querySelectorAll("[data-i18n]").forEach((node) => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      els.langSelect.value = state.lang;
+    }
 
     function save() {
       localStorage.setItem("cakeClickerSave", JSON.stringify(state));
@@ -105,21 +192,28 @@
       try {
         const data = JSON.parse(raw);
         Object.assign(state, data);
-      } catch {}
+      } catch {
+        // ignore corrupted save
+      }
+      if (!i18n[state.lang]) state.lang = "zh";
     }
 
     function format(n) { return Math.floor(n).toLocaleString(); }
 
     function render() {
+      translateStaticText();
       els.cakes.textContent = format(state.cakes);
       els.perClick.textContent = state.perClick;
       els.cps.textContent = state.cps;
       els.knifeCount.textContent = state.knifeCount;
       els.bakerCount.textContent = state.bakerCount;
-      els.buyKnife.textContent = `购买 (${state.knifeCost})`;
-      els.buyBaker.textContent = `购买 (${state.bakerCost})`;
+      els.mixerCount.textContent = state.mixerCount;
+      els.buyKnife.textContent = `${t("buy")} (${state.knifeCost})`;
+      els.buyBaker.textContent = `${t("buy")} (${state.bakerCost})`;
+      els.buyMixer.textContent = `${t("buy")} (${state.mixerCost})`;
       els.buyKnife.disabled = state.cakes < state.knifeCost;
       els.buyBaker.disabled = state.cakes < state.bakerCost;
+      els.buyMixer.disabled = state.cakes < state.mixerCost;
     }
 
     function clickCake() {
@@ -145,15 +239,31 @@
       render(); save();
     }
 
+    function buyMixer() {
+      if (state.cakes < state.mixerCost) return;
+      state.cakes -= state.mixerCost;
+      state.mixerCount += 1;
+      state.cps += 5;
+      state.mixerCost = Math.floor(state.mixerCost * 1.28);
+      render(); save();
+    }
+
     load();
     render();
 
     els.cakeBtn.addEventListener("click", clickCake);
     els.buyKnife.addEventListener("click", buyKnife);
     els.buyBaker.addEventListener("click", buyBaker);
+    els.buyMixer.addEventListener("click", buyMixer);
+
+    els.langSelect.addEventListener("change", (e) => {
+      state.lang = e.target.value;
+      render();
+      save();
+    });
 
     els.resetBtn.addEventListener("click", () => {
-      if (!confirm("确定要重置存档吗？")) return;
+      if (!confirm(t("resetConfirm"))) return;
       localStorage.removeItem("cakeClickerSave");
       location.reload();
     });
